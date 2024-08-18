@@ -1,2 +1,6 @@
 # Igonorar os arquivos abaixo
 .venv
+arquivo.pdf
+teste.pdf
+.enviroments
+config.py
