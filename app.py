@@ -10,7 +10,7 @@ def load_data(file_csv):
     df = pd.read_csv(file_csv, sep=';')
     return df
 
-df = load_data(r'C:\Users\gilis.santos\OneDrive - Collinson Central Services Limited\Área de Trabalho\pdf_streamlit\nba_stats.csv')
+df = load_data(config.path_file_csv)
 
 # Objeto PDF com métodos de formatação do tíluo e corpo do PDF que será exportado:
 
@@ -35,7 +35,11 @@ fig_jogador.update_layout(
 st.plotly_chart(fig_jogador)
 
 # Salvar o gráfico como uma imagem png:
-fig_jogador.write_image(f'{config.path_save_pdf}/grafico.png')
+fig_jogador.write_image(f'{config.path_save_pdf}/grafico.png',
+                        width=1200,
+                        height=400,
+                        scale=4
+                        )
 
 # Criando o arquivo PDF
 pdf = FPDF()
