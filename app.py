@@ -46,29 +46,18 @@ fig_jogador.write_image(f'{config.path_save_files}/grafico.png',
 
 
 # Criando a classe para gerar o arquivo PDF
-
-def insere_imagem():
-    pdf_ = FPDF() 
-    pdf_.image(f'{config.path_save_files}\grafico.png', x=10, y=45, w=180)
-    return "grafico2.png"
-
-
 def gerar_pdf():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font('Helvetica', 'B', 18)
     pdf.cell(200, 10, txt="Relatório de Exemplo", ln=True, align='C')
     pdf.cell(200, 8, txt="Este é um exemplo de relatório gerado com Python.", ln=True, align='C')
-    pdf.image(insere_imagem())
+    pdf.image(f'{config.path_save_files}\grafico.png', x=10, y=45, w=180)
     pdf.output('relatorio.pdf')
     return "relatorio.pdf"
 
 # Criar o arquivo em PDF
 path_pdf = gerar_pdf()
-
-# adicionar imagem no arquivo PDF:
-
-
 
 # Leitura do arquivo PDF:
 with open(path_pdf, "rb") as file:
