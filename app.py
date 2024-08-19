@@ -1,8 +1,8 @@
 import pandas as pd
 import streamlit as st
-from fpdf import FPDF
-import plotly.express as px
+import plotly.express as px # type: ignore
 import config
+from fpdf import FPDF # type: ignore
 
 # Cache e função para carregar os dados:
 @st.cache_data
@@ -11,6 +11,9 @@ def load_data(file_csv):
     return df
 
 df = load_data(config.path_file_csv)
+
+# Título da página
+st.title("Report in PDF")
 
 # Objeto PDF com métodos de formatação do tíluo e corpo do PDF que será exportado:
 
@@ -27,7 +30,7 @@ fig_jogador = px.bar(top_10_points,
 # Atualiza as edições do gráfico:
 fig_jogador.update_layout(
     title='Top 10 média de pontos por jogadores',
-    xaxis_title='Jogador',
+    xaxis_title=None,
     yaxis_title='Média de pontos'
 )
 
@@ -35,22 +38,45 @@ fig_jogador.update_layout(
 st.plotly_chart(fig_jogador)
 
 # Salvar o gráfico como uma imagem png:
-fig_jogador.write_image(f'{config.path_save_pdf}/grafico.png',
-                        width=1200,
-                        height=400,
-                        scale=4
+fig_jogador.write_image(f'{config.path_save_files}/grafico.png',
+                        width=780,
+                        height=320,
+                        scale=2
                         )
 
-# Criando o arquivo PDF
-pdf = FPDF()
-pdf.add_page()
-pdf.set_font('Helvetica', 'B', 18)
 
-#
-# Adicionar as os gráficos que foram exportados como png:
-#for graf_arq_name in graf_arq_names:
-#    pdf.ln(10)                      # Adicionando um Padding de 10px do título para a imagem do gráfico
-#    pdf.image(graf_arq_name, x=None, y=None, w=pdf.w - 20, h=0)
+# Criando a classe para gerar o arquivo PDF
 
-# Exportar/salvar a página para o formato PDF
-#pdf.output(r'C:\Users\gilis.santos\OneDrive - Collinson Central Services Limited\Área de Trabalho\pdf_streamlit\teste.pdf')
+def insere_imagem():
+    pdf_ = FPDF() 
+    pdf_.image(f'{config.path_save_files}\grafico.png', x=10, y=45, w=180)
+    return "grafico2.png"
+
+
+def gerar_pdf():
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font('Helvetica', 'B', 18)
+    pdf.cell(200, 10, txt="Relatório de Exemplo", ln=True, align='C')
+    pdf.cell(200, 8, txt="Este é um exemplo de relatório gerado com Python.", ln=True, align='C')
+    pdf.image(insere_imagem())
+    pdf.output('relatorio.pdf')
+    return "relatorio.pdf"
+
+# Criar o arquivo em PDF
+path_pdf = gerar_pdf()
+
+# adicionar imagem no arquivo PDF:
+
+
+
+# Leitura do arquivo PDF:
+with open(path_pdf, "rb") as file:
+    pdf_em_bytes = file.read()
+
+st.download_button(
+    label="Baixar report em PDF",
+    data=pdf_em_bytes,
+    file_name="Report.pdf",
+    mime="Application/PDF"
+)
